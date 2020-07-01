@@ -1,0 +1,130 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    comm
+    nl
+    ws
+
+Grammar
+
+Rule 0     S' -> prog
+Rule 1     prog -> decl_list stmt_list
+Rule 2     decl_list -> decl_list decl
+Rule 3     decl_list -> <empty>
+Rule 4     decl -> type var_list S
+Rule 5     decl -> type error S
+Rule 6     type -> INT_TYPE
+Rule 7     type -> DOUBLE_TYPE
+Rule 8     var_list -> var
+Rule 9     var_list -> var_list CM var
+Rule 10    var -> ID array
+Rule 11    array -> empty
+Rule 12    array -> array SO INT SC
+Rule 13    stmt_list -> stmt_list stmt
+Rule 14    stmt_list -> stmt
+Rule 15    stmt_list -> stmt_err
+Rule 16    stmt -> if
+Rule 17    stmt -> while
+Rule 18    stmt -> assignment
+Rule 19    stmt -> print
+Rule 20    stmt -> BO stmt_list BC
+Rule 21    assignment -> id S
+Rule 22    assignment -> id EQ exp S
+Rule 23    stmt_er -> BO stmt_list error BC
+Rule 24    stmt_er -> BO error BC
+Rule 25    stmt_er -> error S
+Rule 26    assignment -> id EQ error S
+Rule 27    assignment -> error EQ exp S
+Rule 28    print -> PRINT id S
+Rule 29    if -> IF if_condition stmt
+Rule 30    if -> IF if_condition stmt ELSE stmt
+Rule 31    if_condition -> RO exp RC
+Rule 32    while -> WHILE while_condition stmt
+Rule 33    while_condition -> RO exp RC
+Rule 34    exp -> exp AND exp
+Rule 35    exp -> exp OR exp
+Rule 36    exp -> NOT exp
+Rule 37    exp -> exp EQ EQ exp
+Rule 38    exp -> exp MIN exp
+Rule 39    exp -> exp MAJ exp
+Rule 40    exp -> exp MAJ_EQ exp
+Rule 41    exp -> exp EQ_MAJ exp
+Rule 42    exp -> exp MIN_EQ exp
+Rule 43    exp -> exp EQ_MIN exp
+Rule 44    exp -> exp PLUS exp
+Rule 45    exp -> exp MINUS exp
+Rule 46    exp -> exp STAR exp
+Rule 47    exp -> exp DIV exp
+Rule 48    exp -> RO exp RC
+Rule 49    exp -> id
+Rule 50    exp -> INT
+Rule 51    exp -> DOUBLE
+Rule 52    exp -> MINUS INT
+Rule 53    exp -> MINUS DOUBLE
+Rule 54    id -> ID
+Rule 55    id -> ID SO INT SC
+Rule 56    id -> ID SO ID SC
+Rule 57    empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 34
+BC                   : 20 23 24
+BO                   : 20 23 24
+CM                   : 9
+DIV                  : 47
+DOUBLE               : 51 53
+DOUBLE_TYPE          : 7
+ELSE                 : 30
+EQ                   : 22 26 27 37 37
+EQ_MAJ               : 41
+EQ_MIN               : 43
+ID                   : 10 54 55 56 56
+IF                   : 29 30
+INT                  : 12 50 52 55
+INT_TYPE             : 6
+MAJ                  : 39
+MAJ_EQ               : 40
+MIN                  : 38
+MINUS                : 45 52 53
+MIN_EQ               : 42
+NOT                  : 36
+OR                   : 35
+PLUS                 : 44
+PRINT                : 28
+RC                   : 31 33 48
+RO                   : 31 33 48
+S                    : 4 5 21 22 25 26 27 28
+SC                   : 12 55 56
+SO                   : 12 55 56
+STAR                 : 46
+WHILE                : 32
+comm                 : 
+error                : 5 23 24 25 26 27
+nl                   : 
+ws                   : 
+
+Nonterminals, with rules where they appear
+
+array                : 10 12
+assignment           : 18
+decl                 : 2
+decl_list            : 1 2
+empty                : 11
+exp                  : 22 27 31 33 34 34 35 35 36 37 37 38 38 39 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48
+id                   : 21 22 26 28 49
+if                   : 16
+if_condition         : 29 30
+print                : 19
+prog                 : 0
+stmt                 : 13 14 29 30 30 32
+stmt_er              : 
+stmt_err             : 15
+stmt_list            : 1 13 20 23
+type                 : 4 5
+var                  : 8 9
+var_list             : 4 9
+while                : 17
+while_condition      : 32
+
