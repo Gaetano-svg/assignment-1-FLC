@@ -41,7 +41,6 @@ class MyParser:
     )
 
     # GRAMMAR START
-
     def p_sessione(self,p):
         '''
         sessione : expr_list QP
@@ -164,7 +163,7 @@ class MyParser:
                 p[0] = float((p[1][0] * p[3][0]) + (p[1][1] * p[3][1]))
             
             elif p[1] == '(':
-                p[0] = p[1]
+                p[0] = p[2]
         
         elif ( len(p) == 3):
             p[0] = 0 - p[2]
