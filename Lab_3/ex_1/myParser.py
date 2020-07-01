@@ -1,4 +1,4 @@
-from lexer import *
+from myLexer import *
 import ply.yacc as yacc
 
 

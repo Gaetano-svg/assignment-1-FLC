@@ -3,7 +3,7 @@ import ply.yacc as yacc
 import sys
 from ply.lex import TOKEN
 
-class MyLexer():
+class MyLexer:
 
 
     # CONSTRUCTOR

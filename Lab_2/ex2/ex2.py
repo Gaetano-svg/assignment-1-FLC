@@ -2,7 +2,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 import sys
 
-from MyLexer import *
+from myLexer import *
 
 # create object MY LEXER
 

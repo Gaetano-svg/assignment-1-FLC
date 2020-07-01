@@ -1,4 +1,4 @@
-from lexer import *
+from myLexer import *
 import ply.yacc as yacc
 
 
@@ -30,7 +30,6 @@ class MyParser:
         ('left', 'UMINUS'),
         ('nonassoc', 'IFX'),
         ('nonassoc', 'ELSE'),
-
 
     )
 
@@ -154,7 +153,6 @@ class MyParser:
                 print("Error in expression ( row:", p[3].lineno, ", column:", self.lexer.find_column(p[3].lexer.lexdata, p[3]),")")
         
             #print("Error in expression ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")")
-        
     
     # Print instruction
     def p_print(self,p):
@@ -226,4 +224,3 @@ class MyParser:
         '''
         empty :
         '''
-        #p[0] = None

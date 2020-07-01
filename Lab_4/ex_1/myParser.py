@@ -1,5 +1,6 @@
-from lexer import *
+from myLexer import *
 import ply.yacc as yacc
+import sys
 
 
 class MyParser:

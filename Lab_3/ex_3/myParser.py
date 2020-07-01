@@ -1,4 +1,4 @@
-from lexer import *
+from myLexer import *
 import ply.yacc as yacc
 
 
@@ -184,7 +184,6 @@ class MyParser:
                         | ID ASSOP expr
                         | expr
         '''
-        print("ciao")
 
     def p_term(self,p):
         '''
