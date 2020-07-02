@@ -8,6 +8,7 @@ from myParser import *
 # create objects MY LEXER and MY PARSER
 myLex = MyLexer()
 myPars = MyParser(myLex)
+myLex.init_parser(myPars)
 
 lex = myLex.lexer
 parser = myPars.parser

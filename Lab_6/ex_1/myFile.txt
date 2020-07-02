@@ -15,7 +15,7 @@ x[4] = 2.5;
 
 /* Bubble sort */
 pos = 5;
-while(pos > 0){
+while pos > 0)
   i = 0;
   while (i < pos - 1){
     j = i + 1;

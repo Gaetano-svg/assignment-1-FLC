@@ -15,6 +15,9 @@ class MyLexer():
     def __del__(self):
         print('Lexer destructor called.')
 
+    def init_parser(self, myParser):
+        self.parser = myParser
+
     # list of TOKENS
     tokens = [
 
@@ -29,6 +32,7 @@ class MyLexer():
         'IF', 'ELSE', 'WHILE', 'PRINT',
         'S', 'CM', 'ID',
         'INT', 'DOUBLE',
+        'EMPTY'
 
     ]
 
@@ -39,6 +43,7 @@ class MyLexer():
     # Define a rule so we can track line numbers
     def t_newline(self, t):
         r'\n+'
+        self.parser.lineno += len(t.value)
         t.lexer.lineno += len(t.value)
         pass
 
@@ -56,7 +61,7 @@ class MyLexer():
 
     def t_comm(self,t):
         r'\/\*[^\/\*]*\*\/'
-        print("Comment found")
+        #print("Comment found")
         pass
 
     def t_RO(self, t):
@@ -184,10 +189,14 @@ class MyLexer():
         return t
     
     def t_eof(self,t):
-        print("EOF reached")
+        #print("EOF reached")
         t.lexer.skip(1)
 
     def t_error(self,t):
         r'.'
         print("ERROR (Character not recognized): ", t.value)
+        return t
+
+    def EMPTY(self,t):
+        r''
         return t
