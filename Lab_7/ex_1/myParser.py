@@ -14,6 +14,12 @@ class MyParser:
         self.label = 0
         self.lineno = 1
         self.symbolType_table = {}
+        self.enableSem = True
+        self.errorBuffer = ''
+        self.outputBuffer = ''
+        self.semErrors = 0
+        self.semWarnings = 0
+        self.synWarnings = 0
 
     # DESTRUCTOR
     def __del__(self):
@@ -41,28 +47,45 @@ class MyParser:
         self.label = self.label + 1
         return self.label
 
+    def lookupSymbolType(self, p, indId):
+        
+        try:
+            _type = self.symbolType_table[p[indId]]
+            return _type
+
+        except KeyError:
+
+            self.pSemError("Variable \"" + p[indId] + "\" not declared ", p, indId)
+            return SymbolType(-1,-1)
+        
+
     # ERROR MANAGEMENT
 
     def disableSem(self):
-        self.enableSem = false
+        self.enableSem = False
     
     def sem(self):
         return self.sem
 
-    def pSemError(self, message, p):
-        self.errorBuffer += "SEM ERROR: line: "+p.getLine()+" col: "+p.getColumn()+": "+message+"\n"
+    def pSemError(self, message, p, index):
+
+        print(p[0])
+        print(index)
+        print(p[index])
+
+        self.errorBuffer += "SEM ERROR: line: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
         self.semErrors += 1
     
-    def pSemWarning(self, message, p):
-        self.errorBuffer += "SEM WARNING: line: "+p.getLine()+" col: "+p.getColumn()+": "+message+"\n"
+    def pSemWarning(self, message, p, index):
+        self.errorBuffer += "SEM WARNING: line: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
 
-    def pSynError(self, message, p):
-        print("SYN ERROR: line: "+p.getLine()+" col: "+p.getColumn()+": "+message)
+    def pSynError(self, message, p, index):
+        print("SYN ERROR: line: ( row:" + str(p.lineno) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n")
         print("Could not continue parsing")
         self.done_parsing()
 
-    def pSynWarning(self, message, p):
-        self.errorBuffer += "SYN WARNING: ( row:" + p.lineno + ", column:" + self.lexer.find_column(p.lexer.lexdata, p) + ") : "+message+"\n"
+    def pSynWarning(self, message, p, index):
+        self.errorBuffer += "SYN WARNING: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
         self.synWarnings += 1
         # When there is a syntactic warning semantic is disable to avoid errors due to invalid data structures
         self.disableSem()
@@ -82,9 +105,10 @@ class MyParser:
         prog : decl_list stmt_list
         '''
 
-        if self.sem() & self.semErrors == 0:
-            self.dumpln("\tEND")
-            print(self.outputBuffer)
+        if self.sem():
+            if self.semErrors == 0:
+                self.dumpln("\tEND")
+                print(self.outputBuffer)
         
         else:
             print("\nOUTPUT COULD NOT BE PRODUCED DUE TO ERRORS\n")
@@ -113,7 +137,7 @@ class MyParser:
         decl : type error S
         '''
 
-        self.synWarnings("Error in declaration", p[2])
+        self.pSynWarning("Error in declaration", p , 2)
         #print("Error in declaration ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")")
 
     def p_type(self,p):
@@ -157,25 +181,24 @@ class MyParser:
         '''
 
         p[0] = p[-1] # inheriting TYPE ATTRIBUTE for variable list
-        print(p[-1], p[1],p[2])
-
+        #print(p[-1], p[1],p[2])
+        
         if self.sem():
-
             if(len(p) == 2):
                 self.dumpln("\t" + p[-1] + " " + p[1])
 
-                if p[-1] == 'int' :
+                if p[-1] == 'INT' :
                     self.symbolType_table[p[1]] = SymbolType(0,1)
-                elif p[-1] == 'double' :
+                elif p[-1] == 'DOUBLE' :
                     self.symbolType_table[p[1]] = SymbolType(1,1)
                     
             elif(len(p) == 5):
                 self.dumpln("\t" + p[-1] + " " + p[1] + "[" + p[3] + "]")
                 
-                if p[-1] == 'int':
+                if p[-1] == 'INT':
                     self.symbolType_table[p[1]] = SymbolType(0,p[3])
                 
-                elif p[-1] == 'double':
+                elif p[-1] == 'DOUBLE':
                     self.symbolType_table[p[1]] = SymbolType(1,p[3])
         
     # INSTRUCTIONS
@@ -234,8 +257,8 @@ class MyParser:
                 self.dumpln("\t" + p[1])
 
             elif(len(p) == 5):
-                p[1].checkSymbolTypeAssignment(p[3])
-                self.dumpln("\tEVAL " + p[3] + "\n\tASS " + p[1])
+                p[1].checkSymbolTypeAssignment(p, 3)
+                self.dumpln("\tEVAL " + p[3].toString() + "\n\tASS " + p[1].toString())
 
     # error in assignment
     def p_assignment_error(self,p):
@@ -246,20 +269,22 @@ class MyParser:
 
         if (p[3] != None and p[1] == None):
 
-            if(p[1] == None):
-                self.pSynWarning("Error in assignment", p[3])
-            
+            #if(p[1] == None):
+            self.pSynWarning("Error in assignment", p, 3)
+            '''
             else:
-                self.pSynWarning("Error in assignment", p[1])
+                self.pSynWarning("Error in assignment", p, 1)
+            '''
 
         elif(p[3] == None and p[1] != None):
 
-            if(p[3] == None):
-                self.pSynWarning("Error in expression", p[1])
-            
+            #if(p[3] == None):
+            self.pSynWarning("Error in expression", p, 1)
+            '''
             else:
-                self.pSynWarning("Error in expression", p[3])
-                
+                self.pSynWarning("Error in expression", p, 3)
+            '''
+
     # Print instruction
     def p_print(self,p):
         '''
@@ -267,7 +292,7 @@ class MyParser:
         '''
 
         if(self.sem()):
-            self.dumpln("\tPRINT " + p[2])
+            self.dumpln("\tPRINT " + p[2].toString())
 
 
     # error in print instruction
@@ -276,7 +301,7 @@ class MyParser:
         print : PRINT error S
         '''
 
-        self.pSynWarning("Error in print instruction ", p[2])
+        self.pSynWarning("Error in print instruction ", p, 2)
 
     # If instruction
     def p_if(self,p):
@@ -288,12 +313,12 @@ class MyParser:
 
         if(len(p) == 8):
             if(p[5] == 'else' & self.sem()):
-                self.dump("L" + p[3] + ":")
+                self.dump("L" + str(p[3]) + ":")
             else:
-                self.pSynWarning("Error, else expected in if instruction", p[5])
+                self.pSynWarning("Error, else expected in if instruction", p, 5)
 
         elif self.sem():
-            self.dump("L" + p[3] + ":")
+            self.dump("L" + str(p[3]) + ":")
 
     def p_if_condition(self,p):
         '''
@@ -311,15 +336,15 @@ class MyParser:
         '''
         if(p[3] == ')'):
             if(p[1] == '('):
-                self.pSynWarning("Error in if condition", p[2])
+                self.pSynWarning("Error in if condition", p, 2)
                 #print("Error in if condition ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")" )
 
             else:
-                self.pSynWarning("Error ( expected in if instruction", p[1])
+                self.pSynWarning("Error ( expected in if instruction", p, 1)
                 #print("Error ( expected in if instruction ( row:", p[1].lineno, ", column:", self.lexer.find_column(p[1].lexer.lexdata, p[1]),")")
     
         else:
-            self.pSynWarning("Error ) expected in if instruction", p[3])
+            self.pSynWarning("Error ) expected in if instruction", p, 3)
             #print( "Error ) expected in if instruction ( row:", p[3].lineno, ", column:", self.lexer.find_column(p[3].lexer.lexdata, p[3]),")")
 
 
@@ -330,7 +355,7 @@ class MyParser:
 
         if self.sem():
             p[0] = self.genLabel()
-            self.dumpln("\tEVAL " + p[-1] + "\t\t/* if (line " + self.lineno + ") */\n\tGOTOF L" + p[0])
+            self.dumpln("\tEVAL " + str(p[-1]) + "\t\t/* if (line " + str(self.lineno) + ") */\n\tGOTOF L" + str(p[0]))
 
     def p_nt1_if(self,p):
         '''
@@ -350,8 +375,8 @@ class MyParser:
         
         if self.sem():
             l = p[3]
-            self.dumpln("\tGOTO L" + l[0])
-            self.dump("L" + l[1] + ":")
+            self.dumpln("\tGOTO L" + str(l[0]))
+            self.dump("L" + str(l[1]) + ":")
         
 
     def p_while_condition(self,p):
@@ -371,13 +396,13 @@ class MyParser:
         
         if(p[3] == ')'):
             if(p[1] == '('):
-                self.pSynWarning("Error in while condition ", p[2])
+                self.pSynWarning("Error in while condition ", p, 2)
 
             else:
-                self.pSynWarning("Error ( expected in while instruction ", p[1])
+                self.pSynWarning("Error ( expected in while instruction ", p, 1)
     
         else:
-            self.pSynWarning( "Error ) expected in while instruction ", p[3])
+            self.pSynWarning( "Error ) expected in while instruction ", p, 3)
 
     def p_nt0_while(self,p):
         '''
@@ -387,34 +412,34 @@ class MyParser:
         if(self.sem()):
             x = [self.genLabel(), self.genLabel()]
             p[0] = x
-            self.dumpln("L" + x[0] + ":\tEVAL " + p[-1] + "\t\t/* while (line " + self.lineno + ") */\n\tGOTOF L" + x[1])
+            self.dumpln("L" + str(x[0]) + ":\tEVAL " + p[-1] + "\t\t/* while (line " + str(self.lineno) + ") */\n\tGOTOF L" + str(x[1]))
             
 
     # Expressions
 
     def p_exp_int (self,p):
         '''
-        exp_int: INT
+        exp_int : INT
                     | MINUS INT %prec UMINUS
         '''
 
         if self.sem():
             if(len(p) == 2):
-                p[0] = Expr(p[1], SymbolType(0,1))
+                p[0] = Expr.valTypeConstr(self, p[1], SymbolType(0,1))
             else:
-                p[0] = Expr("-" + p[2], SymbolType(0,1))
+                p[0] = Expr.valTypeConstr(self, "-" + p[2], SymbolType(0,1))
 
     def p_exp_double (self,p):
         '''
-        exp_int: DOUBLE
+        exp_double : DOUBLE
                     | MINUS DOUBLE %prec UMINUS
         '''
 
         if self.sem():
             if(len(p) == 2):
-                p[0] = Expr(p[1], SymbolType(1,1))
+                p[0] = Expr.valTypeConstr(self, p[1], SymbolType(1,1))
             else:
-                p[0] = Expr("-" + p[2], SymbolType(1,1))
+                p[0] = Expr.valTypeConstr(self, "-" + p[2], SymbolType(1,1))
 
 
     def p_exp(self,p):
@@ -447,39 +472,41 @@ class MyParser:
         elif(len(p) == 3):
             if(p[1] == '!'):
                 expr = p[2] + " ! "
-                p[0] = Expr(expr, p[2].getSymbolType())
-            
-        elif len(p) == 4 & p[1] == '(' :
-            p[0] = p[2]
+                p[0] = Expr.valTypeConstr(self, expr, p[2].getSymbolType())
+        
+        elif(len(p) == 4):
 
-        elif(len(p) == 4 & p[1] != '('):
+            if p[1].toString() == '(' :
+                p[0] = p[2]
+            else:
+                p1 = p[1].toString()
+                p3 = p[3].toString()
+                if(p[2] == '&'):
+                    expr = p1 + " " + p3 + " & "
+                elif(p[2] == '|'):
+                    expr = p1 + " " + p3 + " | "
+                elif(p[2] == '<'):
+                    expr = p1 + " " + p3 + " < "
+                elif(p[2] == '>'):
+                    expr = p1 + " " + p3 + " > "
+                elif(p[2] == '<=' ):
+                    expr = p1 + " " + p3 + " <= "
+                elif(p[2] == '=<'):
+                    expr = p1 + " " + p3 + " <= "
+                elif(p[2] == '>=' ):
+                    expr = p1 + " " + p3 + " >= "
+                elif(p[2] == '=>'):
+                    expr = p1 + " " + p3 + " >= "
+                elif(p[2] == '+' ):
+                    expr = p1 + " " + p3 + " + "
+                elif(p[2] == '-'):
+                    expr = p1 + " " + p3 + " - "
+                elif(p[2] == '*'):
+                    expr = p1 + " " + p3 + " * "
+                elif(p[2] == '/'):
+                    expr = p1 + " " + p3 + " / "
 
-            if(p[2] == '&'):
-                expr = p[1] + " " + p[3] + " & "
-            elif(p[2] == '|'):
-                expr = p[1] + " " + p[3] + " | "
-            elif(p[2] == '<'):
-                expr = p[1] + " " + p[3] + " < "
-            elif(p[2] == '>'):
-                expr = p[1] + " " + p[3] + " > "
-            elif(p[2] == '<=' ):
-                expr = p[1] + " " + p[3] + " <= "
-            elif(p[2] == '=<'):
-                expr = p[1] + " " + p[3] + " <= "
-            elif(p[2] == '>=' ):
-                expr = p[1] + " " + p[3] + " >= "
-            elif(p[2] == '=>'):
-                expr = p[1] + " " + p[3] + " >= "
-            elif(p[2] == '+' ):
-                expr = p[1] + " " + p[3] + " + "
-            elif(p[2] == '-'):
-                expr = p[1] + " " + p[3] + " - "
-            elif(p[2] == '*'):
-                expr = p[1] + " " + p[3] + " * "
-            elif(p[2] == '/'):
-                expr = p[1] + " " + p[3] + " / "
-
-            p[0] = Expr(self, expr, p[1].checkSymbolType(p[3]))
+            p[0] = Expr.valTypeConstr(self, expr, p[1].checkSymbolType(p, 3))
         
         
 
@@ -488,7 +515,7 @@ class MyParser:
         exp : RO error RC
         '''
 
-        self.pSynWarning("Error in expression", p)
+        self.pSynWarning("Error in expression", p, 2)
 
     def p_id(self,p):
         '''
@@ -499,10 +526,11 @@ class MyParser:
 
         if self.sem():
             if len(p) == 2:
-                p[0] = Expr(self, p[1])
+                p[0] = Expr.idConstr(self, p, 1)
 
             elif len(p) == 5:
-                p[0] = Expr(self,p[1], p[3])
+                
+                p[0] = Expr.idPosConstr(self, p, 1, 3)
 
     def p_error(self,p):
         '''

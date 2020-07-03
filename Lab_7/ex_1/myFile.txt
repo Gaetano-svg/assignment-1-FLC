@@ -1,7 +1,7 @@
 /* Esempio algoritmo di ordinamento Bubble sort */
 
 
-double x[5];
+double x[5]
 int i, j;
 double swap;
 int pos;
