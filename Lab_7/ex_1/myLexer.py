@@ -10,6 +10,7 @@ class MyLexer():
     def __init__(self):
         print('Lexer constructor called.')
         self.lexer = lex.lex(module=self)
+        self.lexpos = 1
 
     # DESTRUCTOR
     def __del__(self):
@@ -21,7 +22,7 @@ class MyLexer():
     # list of TOKENS
     tokens = [
 
-        'nl',
+        'newline',
         'ws',
         'comm',
         'RC', 'RO', 'BC', 'BO', 'SO' , 'SC',
@@ -42,9 +43,10 @@ class MyLexer():
 
     # Define a rule so we can track line numbers
     def t_newline(self, t):
-        r'\n+'
-        self.parser.lineno += len(t.value)
+        r'(\r|\n|\r\n)+'
         t.lexer.lineno += len(t.value)
+        self.parser.colRowTable[t.lexer.lineno] = self.lexer.lexpos - 1
+                
         pass
 
     # Compute column.
@@ -56,7 +58,7 @@ class MyLexer():
 
     # tokens DEFINITION
     def t_nl(self,t):
-        r'(\s|\r)'
+        r'(\r|\n|\r\n)'
         pass
 
     def t_comm(self,t):

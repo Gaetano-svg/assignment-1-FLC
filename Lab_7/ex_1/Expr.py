@@ -47,7 +47,7 @@ class Expr:
                 pos = int(p[indPos])
                 dim = int(_type.getDim())
                 if (pos >= dim & dim != -1):
-                    parser.pSemError("Array index ("+pos+") exceed array size ("+dim+")")
+                    parser.pSemError("Array index ("+ str(pos) +") exceed array size ("+ str(dim) +")", p, indPos)
             
             return cls(parser, _value, _type)
                 
@@ -76,7 +76,7 @@ class Expr:
 
                 # If operands are of two different types cast them to double 
 
-                self.parser.pSemWarning("Operation between int and double, int number casted to double", p, ind)
+                self.parser.pSemWarning("Operation between int and double, int number casted to double", p, 2)
                 return SymbolType(1, 1)
 
             else :
@@ -87,12 +87,12 @@ class Expr:
             expr = p[ind]
             type1 = self._type.getType()
             type2 = expr.getSymbolType().getType()
-        
-            '''
-            if (type1==0 & type2==1):
-                self.parser.pSemWarning("Assignment of a double value to an int variable", p)
+
+                    
+            if (type1==0 and type2==1):
+                self.parser.pSemWarning("Assignment of a double value to an int variable", p, 2)
             
-            elif (type1==1 & type2==0):
-                self.parser.pSemWarning("Assignment of an int value to an double variable", p)
-            '''
+            elif (type1==1 and type2==0):
+                self.parser.pSemWarning("Assignment of an int value to an double variable", p, 2)
+            
            

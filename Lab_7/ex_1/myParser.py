@@ -12,7 +12,6 @@ class MyParser:
         self.parser = yacc.yacc(module=self)
         self.lexer = myLexer
         self.label = 0
-        self.lineno = 1
         self.symbolType_table = {}
         self.enableSem = True
         self.errorBuffer = ''
@@ -20,6 +19,8 @@ class MyParser:
         self.semErrors = 0
         self.semWarnings = 0
         self.synWarnings = 0
+        
+        self.colRowTable = {} # table used to store for each row the "starting" lexpos of the lexer -> is used to track the column and row of the current operation
 
     # DESTRUCTOR
     def __del__(self):
@@ -65,27 +66,39 @@ class MyParser:
         self.enableSem = False
     
     def sem(self):
-        return self.sem
+        return self.enableSem
 
     def pSemError(self, message, p, index):
+        
+        _lineno = p.lineno(index)
+        _lexpos = self.colRowTable[_lineno]
 
-        print(p[0])
-        print(index)
-        print(p[index])
-
-        self.errorBuffer += "SEM ERROR: line: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
+        self.errorBuffer += "SEM ERROR: line: ( row:" + str(_lineno) + ", column:" + str(p.lexpos(index) - _lexpos) + ") : "+message+"\n"
         self.semErrors += 1
     
     def pSemWarning(self, message, p, index):
-        self.errorBuffer += "SEM WARNING: line: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
+        
+        _lineno = p.lineno(index)
+        _lexpos = self.colRowTable[_lineno]
+
+        self.errorBuffer += "SEM WARNING: line: ( row:" + str(_lineno) + ", column:" + str(p.lexpos(index) - _lexpos) + ") : "+message+"\n"
+        self.semWarnings += 1
 
     def pSynError(self, message, p, index):
-        print("SYN ERROR: line: ( row:" + str(p.lineno) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n")
+        
+        _lineno = p.lineno(index)
+        _lexpos = self.colRowTable[_lineno]
+
+        print("SYN ERROR: line: ( row:" + str(_lineno) + ", column:" + str(p.lexpos(index) - _lexpos) + ") : "+message+"\n")
         print("Could not continue parsing")
-        self.done_parsing()
+        #self.done_parsing()
 
     def pSynWarning(self, message, p, index):
-        self.errorBuffer += "SYN WARNING: ( row:" + str(p.lineno(index)) + ", column:" + str(p.lexpos(index)) + ") : "+message+"\n"
+        
+        _lineno = p.lineno(index)
+        _lexpos = self.colRowTable[_lineno]
+
+        self.errorBuffer += "SYN WARNING: ( row:" + str(_lineno) + ", column:" + str(p.lexpos(index) - _lexpos) + ") : "+message+"\n"
         self.synWarnings += 1
         # When there is a syntactic warning semantic is disable to avoid errors due to invalid data structures
         self.disableSem()
@@ -104,6 +117,7 @@ class MyParser:
         '''
         prog : decl_list stmt_list
         '''
+        result = self.sem()
 
         if self.sem():
             if self.semErrors == 0:
@@ -135,10 +149,14 @@ class MyParser:
     def p_decl_error(self,p):
         '''
         decl : type error S
+                | type var_list error
         '''
 
-        self.pSynWarning("Error in declaration", p , 2)
-        #print("Error in declaration ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")")
+        if p[3] == ';':
+            self.pSynWarning("Error in declaration", p , 2)
+
+        else:
+            self.pSynWarning("Error in declaration, missing ;", p , 2)
 
     def p_type(self,p):
         '''
@@ -181,7 +199,6 @@ class MyParser:
         '''
 
         p[0] = p[-1] # inheriting TYPE ATTRIBUTE for variable list
-        #print(p[-1], p[1],p[2])
         
         if self.sem():
             if(len(p) == 2):
@@ -215,8 +232,7 @@ class MyParser:
         stmt_list : error stmt 
         '''
 
-        self.synWarnings("Error in statement", p[1])
-        #print("Error in statement ( row:", p[1].lineno, ", column:", self.lexer.find_column(p[1].lexer.lexdata, p[1]),")")
+        self.pSynWarning("Error in statement", p, 1)
 
     def p_stmt(self,p):
         '''
@@ -230,20 +246,18 @@ class MyParser:
     def p_stmt_error(self,p):
         '''
         stmt :  BO stmt_list error BC 
-                | BO error BC 
-                | error S 
+                        | BO error BC 
+                        | error S 
         '''
+
         if( len(p) == 5 ):
-            self.synWarnings("Missing ; before } ", p[3])
-            #print("Missing ; before } at ( row:", p[3].lineno, ", column:", self.lexer.find_column(p[3].lexer.lexdata, p[3]),")")
+            self.pSynWarning("Missing ; before } ", p, 3)
 
         elif ( len(p) == 4):
-            self.synWarnings("Missing ; before } ", p[1])
-            #print("Missing ; before } at ( row:", p[1].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")")
+            self.pSynWarning("Missing ; before } ", p, 1)
             
         else:
-            self.synWarnings("Error in statement", p[1])
-            #print("Error in statement ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[1].lexer.lexdata, p[1]),")")
+            self.pSynWarning("Error in statement", p, 1)
 
     # Assignment instruction
     def p_assignment(self,p):
@@ -265,25 +279,18 @@ class MyParser:
         '''
         assignment : id EQ error S 
                         | error EQ exp S 
+                        | id EQ exp error
         '''
 
-        if (p[3] != None and p[1] == None):
-
-            #if(p[1] == None):
-            self.pSynWarning("Error in assignment", p, 3)
-            '''
+        if(isinstance(p[1], Expr)):
+            if p[4] == ";":
+                self.pSynWarning("Error in assignment", p, 3)
+                
             else:
-                self.pSynWarning("Error in assignment", p, 1)
-            '''
-
-        elif(p[3] == None and p[1] != None):
-
-            #if(p[3] == None):
+                self.pSynWarning("Error in assignment missing ;", p, 4)
+        
+        else:
             self.pSynWarning("Error in expression", p, 1)
-            '''
-            else:
-                self.pSynWarning("Error in expression", p, 3)
-            '''
 
     # Print instruction
     def p_print(self,p):
@@ -337,15 +344,12 @@ class MyParser:
         if(p[3] == ')'):
             if(p[1] == '('):
                 self.pSynWarning("Error in if condition", p, 2)
-                #print("Error in if condition ( row:", p[2].lineno, ", column:", self.lexer.find_column(p[2].lexer.lexdata, p[2]),")" )
 
             else:
                 self.pSynWarning("Error ( expected in if instruction", p, 1)
-                #print("Error ( expected in if instruction ( row:", p[1].lineno, ", column:", self.lexer.find_column(p[1].lexer.lexdata, p[1]),")")
     
         else:
             self.pSynWarning("Error ) expected in if instruction", p, 3)
-            #print( "Error ) expected in if instruction ( row:", p[3].lineno, ", column:", self.lexer.find_column(p[3].lexer.lexdata, p[3]),")")
 
 
     def p_nt0_if(self, p):
@@ -355,7 +359,7 @@ class MyParser:
 
         if self.sem():
             p[0] = self.genLabel()
-            self.dumpln("\tEVAL " + str(p[-1]) + "\t\t/* if (line " + str(self.lineno) + ") */\n\tGOTOF L" + str(p[0]))
+            self.dumpln("\tEVAL " + str(p[-1]) + "\t\t/* if (line " + str(self.lexer.lexer.lineno) + ") */\n\tGOTOF L" + str(p[0]))
 
     def p_nt1_if(self,p):
         '''
@@ -412,7 +416,7 @@ class MyParser:
         if(self.sem()):
             x = [self.genLabel(), self.genLabel()]
             p[0] = x
-            self.dumpln("L" + str(x[0]) + ":\tEVAL " + p[-1] + "\t\t/* while (line " + str(self.lineno) + ") */\n\tGOTOF L" + str(x[1]))
+            self.dumpln("L" + str(x[0]) + ":\tEVAL " + p[-1] + "\t\t/* while (line " + str(self.lexer.lexer.lineno) + ") */\n\tGOTOF L" + str(x[1]))
             
 
     # Expressions
@@ -469,45 +473,50 @@ class MyParser:
         if len(p) == 2:
             p[0] = p[1]
 
-        elif(len(p) == 3):
-            if(p[1] == '!'):
-                expr = p[2] + " ! "
-                p[0] = Expr.valTypeConstr(self, expr, p[2].getSymbolType())
-        
-        elif(len(p) == 4):
+        elif self.sem():
+            if(len(p) == 3):
+                if(p[1] == '!'):
+                    expr = p[2] + " ! "
+                    p[0] = Expr.valTypeConstr(self, expr, p[2].getSymbolType())
+            
+            elif(len(p) == 4):
 
-            if p[1].toString() == '(' :
-                p[0] = p[2]
-            else:
-                p1 = p[1].toString()
-                p3 = p[3].toString()
-                if(p[2] == '&'):
-                    expr = p1 + " " + p3 + " & "
-                elif(p[2] == '|'):
-                    expr = p1 + " " + p3 + " | "
-                elif(p[2] == '<'):
-                    expr = p1 + " " + p3 + " < "
-                elif(p[2] == '>'):
-                    expr = p1 + " " + p3 + " > "
-                elif(p[2] == '<=' ):
-                    expr = p1 + " " + p3 + " <= "
-                elif(p[2] == '=<'):
-                    expr = p1 + " " + p3 + " <= "
-                elif(p[2] == '>=' ):
-                    expr = p1 + " " + p3 + " >= "
-                elif(p[2] == '=>'):
-                    expr = p1 + " " + p3 + " >= "
-                elif(p[2] == '+' ):
-                    expr = p1 + " " + p3 + " + "
-                elif(p[2] == '-'):
-                    expr = p1 + " " + p3 + " - "
-                elif(p[2] == '*'):
-                    expr = p1 + " " + p3 + " * "
-                elif(p[2] == '/'):
-                    expr = p1 + " " + p3 + " / "
+                if p[1].toString() == '(' :
+                    p[0] = p[2]
+                else:
+                    p1 = p[1].toString()
+                    p3 = p[3].toString()
+                    if(p[2] == '&'):
+                        expr = p1 + " " + p3 + " & "
+                    elif(p[2] == '|'):
+                        expr = p1 + " " + p3 + " | "
+                    elif(p[2] == '<'):
+                        expr = p1 + " " + p3 + " < "
+                    elif(p[2] == '>'):
+                        expr = p1 + " " + p3 + " > "
+                    elif(p[2] == '<=' ):
+                        expr = p1 + " " + p3 + " <= "
+                    elif(p[2] == '=<'):
+                        expr = p1 + " " + p3 + " <= "
+                    elif(p[2] == '>=' ):
+                        expr = p1 + " " + p3 + " >= "
+                    elif(p[2] == '=>'):
+                        expr = p1 + " " + p3 + " >= "
+                    elif(p[2] == '+' ):
+                        expr = p1 + " " + p3 + " + "
+                    elif(p[2] == '-'):
+                        expr = p1 + " " + p3 + " - "
+                    elif(p[2] == '*'):
+                        expr = p1 + " " + p3 + " * "
+                    elif(p[2] == '/'):
+                        expr = p1 + " " + p3 + " / "
 
-            p[0] = Expr.valTypeConstr(self, expr, p[1].checkSymbolType(p, 3))
-        
+                p[0] = Expr.valTypeConstr(self, expr, p[1].checkSymbolType(p, 3))
+            
+            elif (len(p) == 5):
+                if(p[2] == '=' and p[3] == '='):
+                    expr = p[1].toString() + " " + p[4].toString() + " == "
+                    p[0] = Expr.valTypeConstr(self, expr, p[1].checkSymbolType(p, 4))
         
 
     def p_exp_error(self,p):
