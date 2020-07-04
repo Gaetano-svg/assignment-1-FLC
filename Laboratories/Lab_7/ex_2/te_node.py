@@ -18,15 +18,15 @@ class te_node:
 
         if(isinstance(node, te_node)):
             
-            if node.tag == 1 :
+            if node.tag == te_node.TEBASETYPE :
                 print("[", node.code, "]", end="")
             
-            elif node.tag == 3 :
+            elif node.tag == te_node.TEARRAY :
                 print("array(", node.size, ",", end="")
                 te_node.te_print(node.left)
                 print(")", end="")
             
-            elif node.tag == 6:
+            elif node.tag == te_node.TEPOINTER:
                 print("pointer(", end="")
                 te_node.te_print(node.left)
                 print(") ", end="")
@@ -47,21 +47,21 @@ class te_node:
     @staticmethod
     def te_make_base(code):
         p = te_node()
-        p.setTag(1)
+        p.setTag(te_node.TEBASETYPE)
         p.setCode(code)
         return p
     
     @staticmethod
     def te_make_pointer(base):
         p = te_node()
-        p.setTag(6)
+        p.setTag(te_node.TEPOINTER)
         p.left = base
         return p
 
     @staticmethod
     def te_make_array(size, base):
         p = te_node()
-        p.setTag(3)
+        p.setTag(te_node.TEARRAY)
         p.left = base
         p.size = size
 

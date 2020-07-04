@@ -16,9 +16,6 @@ class MyLexer():
     def __del__(self):
         print('Lexer destructor called.')
 
-    def init_parser(self, myParser):
-        self.parser = myParser
-
     # list of TOKENS
     tokens = [
 
@@ -37,9 +34,7 @@ class MyLexer():
     # Define a rule so we can track line numbers
     def t_newline(self, t):
         r'(\r|\n|\r\n)+'
-        t.lexer.lineno += len(t.value)
-        self.parser.colRowTable[t.lexer.lineno] = self.lexer.lexpos - 1
-                
+        t.lexer.lineno += len(t.value)                
         pass
 
     # Compute column.

@@ -11,14 +11,15 @@ class MyParser:
         print("Parser called")
         self.parser = yacc.yacc(module=self)
         self.lexer = myLexer
-        self.type_table = {}
+        # self.type_table = {}
         self.var_table = {}
-        self.colRowTable = {} # table used to store for each row the "starting" lexpos of the lexer -> is used to track the column and row of the current operation
 
+        '''
         self.type_table["int"] = te_node.te_make_base(1)
         self.type_table["float"] = te_node.te_make_base(2)
         self.type_table["char"] = te_node.te_make_base(3)
         self.type_table["double"] = te_node.te_make_base(4)
+        '''
 
     # DESTRUCTOR
     def __del__(self):
@@ -33,7 +34,6 @@ class MyParser:
     def add_var(self, name, _type):
         vip = var_info(self)
         print("var", name, ":", end="")
-        #_type_node = self.type_table[_type]
         te_node.te_print(_type)
         print("")
         vip.setName(name)
@@ -47,10 +47,7 @@ class MyParser:
 
             return 0
     
-
     # GRAMMAR START
-
-
     def p_Decll(self,p):
         '''
         Decll :  Decll Decl S
@@ -98,8 +95,6 @@ class MyParser:
         V : Ptr ID Ary
         '''
 
-        #print("add var p[3]", p[-1])
-
         self.add_var(p[2], p[3])
         p[0] = p[-1]
 
@@ -109,10 +104,7 @@ class MyParser:
                 | Ptr TIMES
         '''
 
-        #print("ptr",p[-1])
-
         if len(p) == 3:
-            #print("ptr1", p[1])
             p[0] = te_node.te_make_pointer(p[1])
         
         elif len(p) == 2:
@@ -123,8 +115,6 @@ class MyParser:
         Ary : empty
                 | Ary SO NUM SC
         '''
-
-        #print("ary", p[-2])
 
         if len(p) == 5:
             p[0] = te_node.te_make_array(p[3], p[1])
