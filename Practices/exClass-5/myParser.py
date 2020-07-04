@@ -44,6 +44,7 @@ class MyParser:
         print("PARSER: Found declaration of type:", p[2])
         
     # added a copy-rule -> trying to put the p[-1] inside the p[2] symbol (the previous CM symbol) has no result
+    # defining two different productions for the "lid" symbol has no result; it seems that the parser see only
     
     def p_lid(self,p):
         '''
