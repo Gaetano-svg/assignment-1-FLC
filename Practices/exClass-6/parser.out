@@ -1,0 +1,475 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> prog
+Rule 1     prog -> definitions D descriptions
+Rule 2     definitions -> definitions definition
+Rule 3     definitions -> definition
+Rule 4     definition -> OB attrib_list CB ARROW ident
+Rule 5     attrib_list -> attrib_list C attrib
+Rule 6     attrib_list -> attrib
+Rule 7     attrib -> ident DD NUMBER
+Rule 8     descriptions -> descriptions description
+Rule 9     descriptions -> <empty>
+Rule 10    description -> ident DD scores EQ sentence SC
+Rule 11    scores -> scores NT0 C valutation
+Rule 12    scores -> valutation
+Rule 13    NT0 -> <empty>
+Rule 14    valutation -> point ident
+Rule 15    point -> STAR
+Rule 16    point -> PLUS
+Rule 17    point -> DIV
+Rule 18    point -> MINUS
+Rule 19    sentence -> sentence sentence_elem
+Rule 20    sentence -> sentence_elem
+Rule 21    sentence_elem -> WORD
+Rule 22    sentence_elem -> NUMBER
+Rule 23    ident -> ID
+Rule 24    ident -> WORD
+
+Terminals, with rules where they appear
+
+ARROW                : 4
+C                    : 5 11
+CB                   : 4
+D                    : 1
+DD                   : 7 10
+DIV                  : 17
+EQ                   : 10
+ID                   : 23
+MINUS                : 18
+NUMBER               : 7 22
+OB                   : 4
+PLUS                 : 16
+SC                   : 10
+STAR                 : 15
+WORD                 : 21 24
+error                : 
+
+Nonterminals, with rules where they appear
+
+NT0                  : 11
+attrib               : 5 6
+attrib_list          : 4 5
+definition           : 2 3
+definitions          : 1 2
+description          : 8
+descriptions         : 1 8
+ident                : 4 7 10 14
+point                : 14
+prog                 : 0
+scores               : 10 11
+sentence             : 10 19
+sentence_elem        : 19 20
+valutation           : 11 12
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . prog
+    (1) prog -> . definitions D descriptions
+    (2) definitions -> . definitions definition
+    (3) definitions -> . definition
+    (4) definition -> . OB attrib_list CB ARROW ident
+
+    OB              shift and go to state 4
+
+    prog                           shift and go to state 1
+    definitions                    shift and go to state 2
+    definition                     shift and go to state 3
+
+state 1
+
+    (0) S' -> prog .
+
+
+
+state 2
+
+    (1) prog -> definitions . D descriptions
+    (2) definitions -> definitions . definition
+    (4) definition -> . OB attrib_list CB ARROW ident
+
+    D               shift and go to state 5
+    OB              shift and go to state 4
+
+    definition                     shift and go to state 6
+
+state 3
+
+    (3) definitions -> definition .
+
+    D               reduce using rule 3 (definitions -> definition .)
+    OB              reduce using rule 3 (definitions -> definition .)
+
+
+state 4
+
+    (4) definition -> OB . attrib_list CB ARROW ident
+    (5) attrib_list -> . attrib_list C attrib
+    (6) attrib_list -> . attrib
+    (7) attrib -> . ident DD NUMBER
+    (23) ident -> . ID
+    (24) ident -> . WORD
+
+    ID              shift and go to state 10
+    WORD            shift and go to state 11
+
+    attrib_list                    shift and go to state 7
+    ident                          shift and go to state 8
+    attrib                         shift and go to state 9
+
+state 5
+
+    (1) prog -> definitions D . descriptions
+    (8) descriptions -> . descriptions description
+    (9) descriptions -> .
+
+    ID              reduce using rule 9 (descriptions -> .)
+    WORD            reduce using rule 9 (descriptions -> .)
+    $end            reduce using rule 9 (descriptions -> .)
+
+    descriptions                   shift and go to state 12
+
+state 6
+
+    (2) definitions -> definitions definition .
+
+    D               reduce using rule 2 (definitions -> definitions definition .)
+    OB              reduce using rule 2 (definitions -> definitions definition .)
+
+
+state 7
+
+    (4) definition -> OB attrib_list . CB ARROW ident
+    (5) attrib_list -> attrib_list . C attrib
+
+    CB              shift and go to state 13
+    C               shift and go to state 14
+
+
+state 8
+
+    (7) attrib -> ident . DD NUMBER
+
+    DD              shift and go to state 15
+
+
+state 9
+
+    (6) attrib_list -> attrib .
+
+    CB              reduce using rule 6 (attrib_list -> attrib .)
+    C               reduce using rule 6 (attrib_list -> attrib .)
+
+
+state 10
+
+    (23) ident -> ID .
+
+    DD              reduce using rule 23 (ident -> ID .)
+    D               reduce using rule 23 (ident -> ID .)
+    OB              reduce using rule 23 (ident -> ID .)
+    EQ              reduce using rule 23 (ident -> ID .)
+    C               reduce using rule 23 (ident -> ID .)
+
+
+state 11
+
+    (24) ident -> WORD .
+
+    DD              reduce using rule 24 (ident -> WORD .)
+    D               reduce using rule 24 (ident -> WORD .)
+    OB              reduce using rule 24 (ident -> WORD .)
+    EQ              reduce using rule 24 (ident -> WORD .)
+    C               reduce using rule 24 (ident -> WORD .)
+
+
+state 12
+
+    (1) prog -> definitions D descriptions .
+    (8) descriptions -> descriptions . description
+    (10) description -> . ident DD scores EQ sentence SC
+    (23) ident -> . ID
+    (24) ident -> . WORD
+
+    $end            reduce using rule 1 (prog -> definitions D descriptions .)
+    ID              shift and go to state 10
+    WORD            shift and go to state 11
+
+    description                    shift and go to state 16
+    ident                          shift and go to state 17
+
+state 13
+
+    (4) definition -> OB attrib_list CB . ARROW ident
+
+    ARROW           shift and go to state 18
+
+
+state 14
+
+    (5) attrib_list -> attrib_list C . attrib
+    (7) attrib -> . ident DD NUMBER
+    (23) ident -> . ID
+    (24) ident -> . WORD
+
+    ID              shift and go to state 10
+    WORD            shift and go to state 11
+
+    attrib                         shift and go to state 19
+    ident                          shift and go to state 8
+
+state 15
+
+    (7) attrib -> ident DD . NUMBER
+
+    NUMBER          shift and go to state 20
+
+
+state 16
+
+    (8) descriptions -> descriptions description .
+
+    ID              reduce using rule 8 (descriptions -> descriptions description .)
+    WORD            reduce using rule 8 (descriptions -> descriptions description .)
+    $end            reduce using rule 8 (descriptions -> descriptions description .)
+
+
+state 17
+
+    (10) description -> ident . DD scores EQ sentence SC
+
+    DD              shift and go to state 21
+
+
+state 18
+
+    (4) definition -> OB attrib_list CB ARROW . ident
+    (23) ident -> . ID
+    (24) ident -> . WORD
+
+    ID              shift and go to state 10
+    WORD            shift and go to state 11
+
+    ident                          shift and go to state 22
+
+state 19
+
+    (5) attrib_list -> attrib_list C attrib .
+
+    CB              reduce using rule 5 (attrib_list -> attrib_list C attrib .)
+    C               reduce using rule 5 (attrib_list -> attrib_list C attrib .)
+
+
+state 20
+
+    (7) attrib -> ident DD NUMBER .
+
+    CB              reduce using rule 7 (attrib -> ident DD NUMBER .)
+    C               reduce using rule 7 (attrib -> ident DD NUMBER .)
+
+
+state 21
+
+    (10) description -> ident DD . scores EQ sentence SC
+    (11) scores -> . scores NT0 C valutation
+    (12) scores -> . valutation
+    (14) valutation -> . point ident
+    (15) point -> . STAR
+    (16) point -> . PLUS
+    (17) point -> . DIV
+    (18) point -> . MINUS
+
+    STAR            shift and go to state 26
+    PLUS            shift and go to state 27
+    DIV             shift and go to state 28
+    MINUS           shift and go to state 29
+
+    scores                         shift and go to state 23
+    valutation                     shift and go to state 24
+    point                          shift and go to state 25
+
+state 22
+
+    (4) definition -> OB attrib_list CB ARROW ident .
+
+    D               reduce using rule 4 (definition -> OB attrib_list CB ARROW ident .)
+    OB              reduce using rule 4 (definition -> OB attrib_list CB ARROW ident .)
+
+
+state 23
+
+    (10) description -> ident DD scores . EQ sentence SC
+    (11) scores -> scores . NT0 C valutation
+    (13) NT0 -> .
+
+    EQ              shift and go to state 30
+    C               reduce using rule 13 (NT0 -> .)
+
+    NT0                            shift and go to state 31
+
+state 24
+
+    (12) scores -> valutation .
+
+    EQ              reduce using rule 12 (scores -> valutation .)
+    C               reduce using rule 12 (scores -> valutation .)
+
+
+state 25
+
+    (14) valutation -> point . ident
+    (23) ident -> . ID
+    (24) ident -> . WORD
+
+    ID              shift and go to state 10
+    WORD            shift and go to state 11
+
+    ident                          shift and go to state 32
+
+state 26
+
+    (15) point -> STAR .
+
+    ID              reduce using rule 15 (point -> STAR .)
+    WORD            reduce using rule 15 (point -> STAR .)
+
+
+state 27
+
+    (16) point -> PLUS .
+
+    ID              reduce using rule 16 (point -> PLUS .)
+    WORD            reduce using rule 16 (point -> PLUS .)
+
+
+state 28
+
+    (17) point -> DIV .
+
+    ID              reduce using rule 17 (point -> DIV .)
+    WORD            reduce using rule 17 (point -> DIV .)
+
+
+state 29
+
+    (18) point -> MINUS .
+
+    ID              reduce using rule 18 (point -> MINUS .)
+    WORD            reduce using rule 18 (point -> MINUS .)
+
+
+state 30
+
+    (10) description -> ident DD scores EQ . sentence SC
+    (19) sentence -> . sentence sentence_elem
+    (20) sentence -> . sentence_elem
+    (21) sentence_elem -> . WORD
+    (22) sentence_elem -> . NUMBER
+
+    WORD            shift and go to state 35
+    NUMBER          shift and go to state 36
+
+    sentence                       shift and go to state 33
+    sentence_elem                  shift and go to state 34
+
+state 31
+
+    (11) scores -> scores NT0 . C valutation
+
+    C               shift and go to state 37
+
+
+state 32
+
+    (14) valutation -> point ident .
+
+    EQ              reduce using rule 14 (valutation -> point ident .)
+    C               reduce using rule 14 (valutation -> point ident .)
+
+
+state 33
+
+    (10) description -> ident DD scores EQ sentence . SC
+    (19) sentence -> sentence . sentence_elem
+    (21) sentence_elem -> . WORD
+    (22) sentence_elem -> . NUMBER
+
+    SC              shift and go to state 38
+    WORD            shift and go to state 35
+    NUMBER          shift and go to state 36
+
+    sentence_elem                  shift and go to state 39
+
+state 34
+
+    (20) sentence -> sentence_elem .
+
+    SC              reduce using rule 20 (sentence -> sentence_elem .)
+    WORD            reduce using rule 20 (sentence -> sentence_elem .)
+    NUMBER          reduce using rule 20 (sentence -> sentence_elem .)
+
+
+state 35
+
+    (21) sentence_elem -> WORD .
+
+    SC              reduce using rule 21 (sentence_elem -> WORD .)
+    WORD            reduce using rule 21 (sentence_elem -> WORD .)
+    NUMBER          reduce using rule 21 (sentence_elem -> WORD .)
+
+
+state 36
+
+    (22) sentence_elem -> NUMBER .
+
+    SC              reduce using rule 22 (sentence_elem -> NUMBER .)
+    WORD            reduce using rule 22 (sentence_elem -> NUMBER .)
+    NUMBER          reduce using rule 22 (sentence_elem -> NUMBER .)
+
+
+state 37
+
+    (11) scores -> scores NT0 C . valutation
+    (14) valutation -> . point ident
+    (15) point -> . STAR
+    (16) point -> . PLUS
+    (17) point -> . DIV
+    (18) point -> . MINUS
+
+    STAR            shift and go to state 26
+    PLUS            shift and go to state 27
+    DIV             shift and go to state 28
+    MINUS           shift and go to state 29
+
+    valutation                     shift and go to state 40
+    point                          shift and go to state 25
+
+state 38
+
+    (10) description -> ident DD scores EQ sentence SC .
+
+    ID              reduce using rule 10 (description -> ident DD scores EQ sentence SC .)
+    WORD            reduce using rule 10 (description -> ident DD scores EQ sentence SC .)
+    $end            reduce using rule 10 (description -> ident DD scores EQ sentence SC .)
+
+
+state 39
+
+    (19) sentence -> sentence sentence_elem .
+
+    SC              reduce using rule 19 (sentence -> sentence sentence_elem .)
+    WORD            reduce using rule 19 (sentence -> sentence sentence_elem .)
+    NUMBER          reduce using rule 19 (sentence -> sentence sentence_elem .)
+
+
+state 40
+
+    (11) scores -> scores NT0 C valutation .
+
+    EQ              reduce using rule 11 (scores -> scores NT0 C valutation .)
+    C               reduce using rule 11 (scores -> scores NT0 C valutation .)
+
