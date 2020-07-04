@@ -1,0 +1,211 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    nl
+
+Grammar
+
+Rule 0     S' -> expr_list
+Rule 1     expr_list -> expr_list expr
+Rule 2     expr_list -> expr
+Rule 3     expr -> e EQUAL
+Rule 4     e -> e PLUS t
+Rule 5     e -> e MINUS t
+Rule 6     e -> t
+Rule 7     t -> OBRACKET e CBRACKET
+Rule 8     t -> NUMBER
+
+Terminals, with rules where they appear
+
+CBRACKET             : 7
+EQUAL                : 3
+MINUS                : 5
+NUMBER               : 8
+OBRACKET             : 7
+PLUS                 : 4
+error                : 
+nl                   : 
+
+Nonterminals, with rules where they appear
+
+e                    : 3 4 5 7
+expr                 : 1 2
+expr_list            : 1 0
+t                    : 4 5 6
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . expr_list
+    (1) expr_list -> . expr_list expr
+    (2) expr_list -> . expr
+    (3) expr -> . e EQUAL
+    (4) e -> . e PLUS t
+    (5) e -> . e MINUS t
+    (6) e -> . t
+    (7) t -> . OBRACKET e CBRACKET
+    (8) t -> . NUMBER
+
+    OBRACKET        shift and go to state 5
+    NUMBER          shift and go to state 6
+
+    expr_list                      shift and go to state 1
+    expr                           shift and go to state 2
+    e                              shift and go to state 3
+    t                              shift and go to state 4
+
+state 1
+
+    (0) S' -> expr_list .
+    (1) expr_list -> expr_list . expr
+    (3) expr -> . e EQUAL
+    (4) e -> . e PLUS t
+    (5) e -> . e MINUS t
+    (6) e -> . t
+    (7) t -> . OBRACKET e CBRACKET
+    (8) t -> . NUMBER
+
+    OBRACKET        shift and go to state 5
+    NUMBER          shift and go to state 6
+
+    expr                           shift and go to state 7
+    e                              shift and go to state 3
+    t                              shift and go to state 4
+
+state 2
+
+    (2) expr_list -> expr .
+
+    OBRACKET        reduce using rule 2 (expr_list -> expr .)
+    NUMBER          reduce using rule 2 (expr_list -> expr .)
+    $end            reduce using rule 2 (expr_list -> expr .)
+
+
+state 3
+
+    (3) expr -> e . EQUAL
+    (4) e -> e . PLUS t
+    (5) e -> e . MINUS t
+
+    EQUAL           shift and go to state 8
+    PLUS            shift and go to state 9
+    MINUS           shift and go to state 10
+
+
+state 4
+
+    (6) e -> t .
+
+    EQUAL           reduce using rule 6 (e -> t .)
+    PLUS            reduce using rule 6 (e -> t .)
+    MINUS           reduce using rule 6 (e -> t .)
+    CBRACKET        reduce using rule 6 (e -> t .)
+
+
+state 5
+
+    (7) t -> OBRACKET . e CBRACKET
+    (4) e -> . e PLUS t
+    (5) e -> . e MINUS t
+    (6) e -> . t
+    (7) t -> . OBRACKET e CBRACKET
+    (8) t -> . NUMBER
+
+    OBRACKET        shift and go to state 5
+    NUMBER          shift and go to state 6
+
+    e                              shift and go to state 11
+    t                              shift and go to state 4
+
+state 6
+
+    (8) t -> NUMBER .
+
+    EQUAL           reduce using rule 8 (t -> NUMBER .)
+    PLUS            reduce using rule 8 (t -> NUMBER .)
+    MINUS           reduce using rule 8 (t -> NUMBER .)
+    CBRACKET        reduce using rule 8 (t -> NUMBER .)
+
+
+state 7
+
+    (1) expr_list -> expr_list expr .
+
+    OBRACKET        reduce using rule 1 (expr_list -> expr_list expr .)
+    NUMBER          reduce using rule 1 (expr_list -> expr_list expr .)
+    $end            reduce using rule 1 (expr_list -> expr_list expr .)
+
+
+state 8
+
+    (3) expr -> e EQUAL .
+
+    OBRACKET        reduce using rule 3 (expr -> e EQUAL .)
+    NUMBER          reduce using rule 3 (expr -> e EQUAL .)
+    $end            reduce using rule 3 (expr -> e EQUAL .)
+
+
+state 9
+
+    (4) e -> e PLUS . t
+    (7) t -> . OBRACKET e CBRACKET
+    (8) t -> . NUMBER
+
+    OBRACKET        shift and go to state 5
+    NUMBER          shift and go to state 6
+
+    t                              shift and go to state 12
+
+state 10
+
+    (5) e -> e MINUS . t
+    (7) t -> . OBRACKET e CBRACKET
+    (8) t -> . NUMBER
+
+    OBRACKET        shift and go to state 5
+    NUMBER          shift and go to state 6
+
+    t                              shift and go to state 13
+
+state 11
+
+    (7) t -> OBRACKET e . CBRACKET
+    (4) e -> e . PLUS t
+    (5) e -> e . MINUS t
+
+    CBRACKET        shift and go to state 14
+    PLUS            shift and go to state 9
+    MINUS           shift and go to state 10
+
+
+state 12
+
+    (4) e -> e PLUS t .
+
+    EQUAL           reduce using rule 4 (e -> e PLUS t .)
+    PLUS            reduce using rule 4 (e -> e PLUS t .)
+    MINUS           reduce using rule 4 (e -> e PLUS t .)
+    CBRACKET        reduce using rule 4 (e -> e PLUS t .)
+
+
+state 13
+
+    (5) e -> e MINUS t .
+
+    EQUAL           reduce using rule 5 (e -> e MINUS t .)
+    PLUS            reduce using rule 5 (e -> e MINUS t .)
+    MINUS           reduce using rule 5 (e -> e MINUS t .)
+    CBRACKET        reduce using rule 5 (e -> e MINUS t .)
+
+
+state 14
+
+    (7) t -> OBRACKET e CBRACKET .
+
+    EQUAL           reduce using rule 7 (t -> OBRACKET e CBRACKET .)
+    PLUS            reduce using rule 7 (t -> OBRACKET e CBRACKET .)
+    MINUS           reduce using rule 7 (t -> OBRACKET e CBRACKET .)
+    CBRACKET        reduce using rule 7 (t -> OBRACKET e CBRACKET .)
+
