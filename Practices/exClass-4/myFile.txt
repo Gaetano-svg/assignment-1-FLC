@@ -1,0 +1,21 @@
+Salad 2.10;
+Wine 12.00;
+Pasta 1.50;
+Bread 0.40;
+%
+/*
+Stefano: 15.0 EURO
+Giulia: 4.0 EURO
+*/
+
+Stefano : 2 Pasta, 1 Wine;
+/*
+Stefano: 15.0 EURO
+Giulia: 4.0 EURO
+*/
+Giulia : 1 Salad, 1 Bread, 1 Pasta;
+
+/*
+Stefano: 15.0 EURO
+Giulia: 4.0 EURO
+*/
