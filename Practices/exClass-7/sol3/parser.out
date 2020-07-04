@@ -1,0 +1,431 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> prog
+Rule 1     prog -> prog_ok
+Rule 2     prog_ok -> START C mp3_list SERVER C data_time user_list
+Rule 3     mp3_list -> mp3
+Rule 4     mp3_list -> mp3_list mp3
+Rule 5     mp3 -> dim song_list S
+Rule 6     dim -> NUMBER KBS C
+Rule 7     song -> SONG NUMBER
+Rule 8     song_list -> song
+Rule 9     song_list -> song_list CM NT0 song
+Rule 10    NT0 -> <empty>
+Rule 11    data_time -> TIME C HOUR DATA C DATE
+Rule 12    data_time -> DATA C DATE TIME C HOUR
+Rule 13    user_list -> <empty>
+Rule 14    user_list -> user_list user
+Rule 15    user -> ip C songs_list S
+Rule 16    ip -> IP
+Rule 17    songs_list -> SONG
+Rule 18    songs_list -> songs_list CM SONG
+
+Terminals, with rules where they appear
+
+C                    : 2 2 6 11 11 12 12 15
+CM                   : 9 18
+DATA                 : 11 12
+DATE                 : 11 12
+HOUR                 : 11 12
+IP                   : 16
+KBS                  : 6
+NUMBER               : 6 7
+S                    : 5 15
+SERVER               : 2
+SONG                 : 7 17 18
+START                : 2
+TIME                 : 11 12
+error                : 
+
+Nonterminals, with rules where they appear
+
+NT0                  : 9
+data_time            : 2
+dim                  : 5
+ip                   : 15
+mp3                  : 3 4
+mp3_list             : 2 4
+prog                 : 0
+prog_ok              : 1
+song                 : 8 9
+song_list            : 5 9
+songs_list           : 15 18
+user                 : 14
+user_list            : 2 14
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . prog
+    (1) prog -> . prog_ok
+    (2) prog_ok -> . START C mp3_list SERVER C data_time user_list
+
+    START           shift and go to state 3
+
+    prog                           shift and go to state 1
+    prog_ok                        shift and go to state 2
+
+state 1
+
+    (0) S' -> prog .
+
+
+
+state 2
+
+    (1) prog -> prog_ok .
+
+    $end            reduce using rule 1 (prog -> prog_ok .)
+
+
+state 3
+
+    (2) prog_ok -> START . C mp3_list SERVER C data_time user_list
+
+    C               shift and go to state 4
+
+
+state 4
+
+    (2) prog_ok -> START C . mp3_list SERVER C data_time user_list
+    (3) mp3_list -> . mp3
+    (4) mp3_list -> . mp3_list mp3
+    (5) mp3 -> . dim song_list S
+    (6) dim -> . NUMBER KBS C
+
+    NUMBER          shift and go to state 8
+
+    mp3_list                       shift and go to state 5
+    mp3                            shift and go to state 6
+    dim                            shift and go to state 7
+
+state 5
+
+    (2) prog_ok -> START C mp3_list . SERVER C data_time user_list
+    (4) mp3_list -> mp3_list . mp3
+    (5) mp3 -> . dim song_list S
+    (6) dim -> . NUMBER KBS C
+
+    SERVER          shift and go to state 9
+    NUMBER          shift and go to state 8
+
+    mp3                            shift and go to state 10
+    dim                            shift and go to state 7
+
+state 6
+
+    (3) mp3_list -> mp3 .
+
+    SERVER          reduce using rule 3 (mp3_list -> mp3 .)
+    NUMBER          reduce using rule 3 (mp3_list -> mp3 .)
+
+
+state 7
+
+    (5) mp3 -> dim . song_list S
+    (8) song_list -> . song
+    (9) song_list -> . song_list CM NT0 song
+    (7) song -> . SONG NUMBER
+
+    SONG            shift and go to state 13
+
+    song_list                      shift and go to state 11
+    song                           shift and go to state 12
+
+state 8
+
+    (6) dim -> NUMBER . KBS C
+
+    KBS             shift and go to state 14
+
+
+state 9
+
+    (2) prog_ok -> START C mp3_list SERVER . C data_time user_list
+
+    C               shift and go to state 15
+
+
+state 10
+
+    (4) mp3_list -> mp3_list mp3 .
+
+    SERVER          reduce using rule 4 (mp3_list -> mp3_list mp3 .)
+    NUMBER          reduce using rule 4 (mp3_list -> mp3_list mp3 .)
+
+
+state 11
+
+    (5) mp3 -> dim song_list . S
+    (9) song_list -> song_list . CM NT0 song
+
+    S               shift and go to state 16
+    CM              shift and go to state 17
+
+
+state 12
+
+    (8) song_list -> song .
+
+    S               reduce using rule 8 (song_list -> song .)
+    CM              reduce using rule 8 (song_list -> song .)
+
+
+state 13
+
+    (7) song -> SONG . NUMBER
+
+    NUMBER          shift and go to state 18
+
+
+state 14
+
+    (6) dim -> NUMBER KBS . C
+
+    C               shift and go to state 19
+
+
+state 15
+
+    (2) prog_ok -> START C mp3_list SERVER C . data_time user_list
+    (11) data_time -> . TIME C HOUR DATA C DATE
+    (12) data_time -> . DATA C DATE TIME C HOUR
+
+    TIME            shift and go to state 21
+    DATA            shift and go to state 22
+
+    data_time                      shift and go to state 20
+
+state 16
+
+    (5) mp3 -> dim song_list S .
+
+    SERVER          reduce using rule 5 (mp3 -> dim song_list S .)
+    NUMBER          reduce using rule 5 (mp3 -> dim song_list S .)
+
+
+state 17
+
+    (9) song_list -> song_list CM . NT0 song
+    (10) NT0 -> .
+
+    SONG            reduce using rule 10 (NT0 -> .)
+
+    NT0                            shift and go to state 23
+
+state 18
+
+    (7) song -> SONG NUMBER .
+
+    S               reduce using rule 7 (song -> SONG NUMBER .)
+    CM              reduce using rule 7 (song -> SONG NUMBER .)
+
+
+state 19
+
+    (6) dim -> NUMBER KBS C .
+
+    SONG            reduce using rule 6 (dim -> NUMBER KBS C .)
+
+
+state 20
+
+    (2) prog_ok -> START C mp3_list SERVER C data_time . user_list
+    (13) user_list -> .
+    (14) user_list -> . user_list user
+
+    IP              reduce using rule 13 (user_list -> .)
+    $end            reduce using rule 13 (user_list -> .)
+
+    user_list                      shift and go to state 24
+
+state 21
+
+    (11) data_time -> TIME . C HOUR DATA C DATE
+
+    C               shift and go to state 25
+
+
+state 22
+
+    (12) data_time -> DATA . C DATE TIME C HOUR
+
+    C               shift and go to state 26
+
+
+state 23
+
+    (9) song_list -> song_list CM NT0 . song
+    (7) song -> . SONG NUMBER
+
+    SONG            shift and go to state 13
+
+    song                           shift and go to state 27
+
+state 24
+
+    (2) prog_ok -> START C mp3_list SERVER C data_time user_list .
+    (14) user_list -> user_list . user
+    (15) user -> . ip C songs_list S
+    (16) ip -> . IP
+
+    $end            reduce using rule 2 (prog_ok -> START C mp3_list SERVER C data_time user_list .)
+    IP              shift and go to state 30
+
+    user                           shift and go to state 28
+    ip                             shift and go to state 29
+
+state 25
+
+    (11) data_time -> TIME C . HOUR DATA C DATE
+
+    HOUR            shift and go to state 31
+
+
+state 26
+
+    (12) data_time -> DATA C . DATE TIME C HOUR
+
+    DATE            shift and go to state 32
+
+
+state 27
+
+    (9) song_list -> song_list CM NT0 song .
+
+    S               reduce using rule 9 (song_list -> song_list CM NT0 song .)
+    CM              reduce using rule 9 (song_list -> song_list CM NT0 song .)
+
+
+state 28
+
+    (14) user_list -> user_list user .
+
+    IP              reduce using rule 14 (user_list -> user_list user .)
+    $end            reduce using rule 14 (user_list -> user_list user .)
+
+
+state 29
+
+    (15) user -> ip . C songs_list S
+
+    C               shift and go to state 33
+
+
+state 30
+
+    (16) ip -> IP .
+
+    C               reduce using rule 16 (ip -> IP .)
+
+
+state 31
+
+    (11) data_time -> TIME C HOUR . DATA C DATE
+
+    DATA            shift and go to state 34
+
+
+state 32
+
+    (12) data_time -> DATA C DATE . TIME C HOUR
+
+    TIME            shift and go to state 35
+
+
+state 33
+
+    (15) user -> ip C . songs_list S
+    (17) songs_list -> . SONG
+    (18) songs_list -> . songs_list CM SONG
+
+    SONG            shift and go to state 37
+
+    songs_list                     shift and go to state 36
+
+state 34
+
+    (11) data_time -> TIME C HOUR DATA . C DATE
+
+    C               shift and go to state 38
+
+
+state 35
+
+    (12) data_time -> DATA C DATE TIME . C HOUR
+
+    C               shift and go to state 39
+
+
+state 36
+
+    (15) user -> ip C songs_list . S
+    (18) songs_list -> songs_list . CM SONG
+
+    S               shift and go to state 40
+    CM              shift and go to state 41
+
+
+state 37
+
+    (17) songs_list -> SONG .
+
+    S               reduce using rule 17 (songs_list -> SONG .)
+    CM              reduce using rule 17 (songs_list -> SONG .)
+
+
+state 38
+
+    (11) data_time -> TIME C HOUR DATA C . DATE
+
+    DATE            shift and go to state 42
+
+
+state 39
+
+    (12) data_time -> DATA C DATE TIME C . HOUR
+
+    HOUR            shift and go to state 43
+
+
+state 40
+
+    (15) user -> ip C songs_list S .
+
+    IP              reduce using rule 15 (user -> ip C songs_list S .)
+    $end            reduce using rule 15 (user -> ip C songs_list S .)
+
+
+state 41
+
+    (18) songs_list -> songs_list CM . SONG
+
+    SONG            shift and go to state 44
+
+
+state 42
+
+    (11) data_time -> TIME C HOUR DATA C DATE .
+
+    IP              reduce using rule 11 (data_time -> TIME C HOUR DATA C DATE .)
+    $end            reduce using rule 11 (data_time -> TIME C HOUR DATA C DATE .)
+
+
+state 43
+
+    (12) data_time -> DATA C DATE TIME C HOUR .
+
+    IP              reduce using rule 12 (data_time -> DATA C DATE TIME C HOUR .)
+    $end            reduce using rule 12 (data_time -> DATA C DATE TIME C HOUR .)
+
+
+state 44
+
+    (18) songs_list -> songs_list CM SONG .
+
+    S               reduce using rule 18 (songs_list -> songs_list CM SONG .)
+    CM              reduce using rule 18 (songs_list -> songs_list CM SONG .)
+
