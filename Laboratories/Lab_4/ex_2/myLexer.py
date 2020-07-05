@@ -20,7 +20,6 @@ class MyLexer():
 
         'nl',
         'ws',
-        'comm',
         'RC', 'RO', 'BC', 'BO', 'SO' , 'SC',
         'DIV', 'STAR', 'PLUS', 'MINUS',
         'MIN', 'MAJ', 'MIN_EQ', 'MAJ_EQ', 'EQ_MIN', 'EQ_MAJ', 'EQ',
@@ -32,7 +31,10 @@ class MyLexer():
 
     ]
 
-    t_ignore = r' '
+    # list of STATES -> used only the one to catch comments
+    states = (
+        ('COMMENT','exclusive'),
+    ) 
     
     t_ws = r'([ \t])'
 
@@ -52,11 +54,6 @@ class MyLexer():
     # tokens DEFINITION
     def t_nl(self,t):
         r'(\s|\r)'
-        pass
-
-    def t_comm(self,t):
-        r'\/\*[^\/\*]*\*\/'
-        print("Comment found")
         pass
 
     def t_RO(self, t):
@@ -93,14 +90,6 @@ class MyLexer():
 
     def t_MINUS(self,t):
         r'\-'
-        return t
-
-    def t_STAR(self,t):
-        r'\*'
-        return t
-
-    def t_DIV(self,t):
-        r'\/'
         return t
 
     def t_MIN(self,t):
@@ -186,6 +175,37 @@ class MyLexer():
     def t_eof(self,t):
         print("EOF reached")
         t.lexer.skip(1)
+
+    # COMMENT STATE
+    
+    def t_INITIAL_comm(self,t):
+        r'\/\*'
+        self.lexer.begin('COMMENT')
+
+    def t_COMMENT_end(self,t):
+        '\*\/'
+        self.lexer.begin('INITIAL')
+
+    def t_COMMENT_body(self,t):
+        r'.'
+        pass
+
+    def t_COMMENT_nl(self,t):
+        r'(\n|\r|\r\n)|\s|\t'
+        pass
+
+    def t_COMMENT_error(self,t):
+        r'.'
+        print("ERROR:", t.value)
+        return t
+
+    def t_STAR(self,t):
+        r'\*'
+        return t
+
+    def t_DIV(self,t):
+        r'\/'
+        return t
 
     def t_error(self,t):
         r'.'

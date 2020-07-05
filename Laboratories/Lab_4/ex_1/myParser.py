@@ -20,14 +20,6 @@ class MyParser:
 
     tokens = MyLexer.tokens
 
-    # Ensure our parser understands the correct order of operations.
-    # The precedence variable is a special Ply variable.
-
-    precedence = (
-
-
-    )
-
     # GRAMMAR START
 
     def p_log_prog(self,p):

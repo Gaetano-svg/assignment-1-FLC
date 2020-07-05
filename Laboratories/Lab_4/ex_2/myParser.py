@@ -139,7 +139,7 @@ class MyParser:
         '''
         # p[1] == None ---> error
         
-        print(p[1], p[2], p[3], p[4])
+        # print(p[1], p[2], p[3], p[4])
         if (p[3] != None and p[1] == None):
             if(p[1] == None):
                 print("Error in assignment ( row:", p[3].lineno, ", column:", self.lexer.find_column(p[3].lexer.lexdata, p[3]),")")
