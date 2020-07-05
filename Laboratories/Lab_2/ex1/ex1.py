@@ -19,6 +19,11 @@ tokens = [
 
 ]
 
+# list of STATES -> used only the one to catch comments
+states = (
+    ('COMMENT','exclusive'),
+) 
+
 # tokens DEFINITION
 
 t_nl = r'\n|\r|\r\n'
@@ -28,11 +33,6 @@ t_id            = r'[A-Za-z_][A-Za-z0-9_]*'
 t_integer       = r'([1-9][0-9]*|0)'
 t_double        = r'(([0-9]+\.[0-9]*)|([0-9]*\.[0-9]+))(e|E(\+|\-)?[0-9]+)?'
 
-
-def t_error(t):
-    r'.'
-    print("SCANNER ERROR: ", t.value)
-    t.lexer.skip(1)
 
 def t_print(t):
     r'print'
@@ -57,9 +57,6 @@ def t_S(t):
 def t_C(t):
     r'\,'
     print('C ', end='')
-
-def t_comment(t):
-    r'\/\*.*\*\/'
 
 def t_RO(t):
     r'\('
@@ -96,14 +93,6 @@ def t_PLUS(t):
 def t_MINUS(t):
     r'\-'
     print("MINUS ", end='')
-
-def t_STAR(t):
-    r'\*'
-    print("STAR ", end='')
-
-def t_DIV(t):
-    r'\/'
-    print("DIV ", end='')
 
 def t_MIN(t):
     r'\<'
@@ -148,6 +137,43 @@ def t_INTTYPE(t):
 def t_DOUBLETYPE(t):
     r'double'
     print("DOUBLE_TYPE", end=' ')
+
+# COMMENT STATE
+    
+def t_INITIAL_comm(t):
+    r'\/\*'
+    t.lexer.begin('COMMENT')
+
+def t_COMMENT_end(t):
+    r'\*\/'
+    t.lexer.begin('INITIAL')
+
+def t_COMMENT_body(t):
+    r'.'
+    pass
+
+def t_COMMENT_nl(t):
+    r'(\n|\r|\r\n)|\s|\t'
+    pass
+
+def t_COMMENT_error(t):
+    r'.'
+    print("ERROR:", t.value)
+    return t
+
+def t_STAR(t):
+    r'\*'
+    print("STAR ", end='')
+
+def t_DIV(t):
+    r'\/'
+    print("DIV ", end='')
+
+def t_error(t):
+    r'.'
+    print("SCANNER ERROR: ", t.value)
+    t.lexer.skip(1)
+
 
 # reading INPUT FILE
 
