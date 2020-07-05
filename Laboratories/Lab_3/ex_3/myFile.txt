@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+/* comment */
+
 extern int *fn1(int a, int b, char *c[]); 
 register int ff; 
 

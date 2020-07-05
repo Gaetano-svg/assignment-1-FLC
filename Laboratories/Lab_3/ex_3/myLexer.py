@@ -20,9 +20,8 @@ class MyLexer():
 
         'nl',
         'ws',
-        'comm', 'directive',
         'ASSOP', 'RELOP', 'LOGOP', 'SIGN_MODIFIER', 'LENG_MODIFIER', 'STORAGE_SPEC', 'TYPE',
-        'STRINGCONST', 'CONST', 'FLOATING', 'ID', 'VOID', 
+        'STRINGCONST', 'CONST', 'ID', 'VOID', 
         'RBCLOSED', 'RBOPEN', 'CBOPEN', 'CBCLOSED', 'SBOPEN' , 'SBCLOSED',
         'DIVIDE', 'TIMES', 'PLUS', 'MINUS', 'EQUALS', 'INCR', 'DECR', 'MOD',
         'IF', 'ELSE', 'WHILE', 'SWITCH', 'CASE', 'FOR', 'RETURN', 'DEFAULT', 'BREAK',
@@ -30,9 +29,12 @@ class MyLexer():
 
     ]
 
-    # tokens DEFINITION
+    # list of STATES -> used only the one to catch comments
+    states = (
+        ('COMMENT','exclusive'),
+    )
 
-    t_ignore = r' '
+    # tokens DEFINITION
     
     def t_RBOPEN(self, t):
         r'\('
@@ -95,11 +97,6 @@ class MyLexer():
         r'(\#((include)|(define)).*\n)'
         pass
 
-    def t_comm(self,t):
-        r'\/\*[^\/\*]*\*\/'
-        print("Comment found")
-        pass
-
     def t_CBOPEN(self,t):
         r'\{'
         return t
@@ -134,14 +131,6 @@ class MyLexer():
 
     def t_MINUS(self,t):
         r'\-'
-        return t
-
-    def t_TIMES(self,t):
-        r'\*'
-        return t
-
-    def t_DIVIDE(self,t):
-        r'\/'
         return t
 
     def t_MOD(self,t):
@@ -203,6 +192,37 @@ class MyLexer():
     def t_eof(self,t):
         print("EOF reached")
         t.lexer.skip(1)
+
+    # COMMENT STATE
+    
+    def t_INITIAL_comm(self,t):
+        r'\/\*'
+        self.lexer.begin('COMMENT')
+
+    def t_COMMENT_end(self,t):
+        '\*\/'
+        self.lexer.begin('INITIAL')
+
+    def t_COMMENT_body(self,t):
+        r'.'
+        pass
+
+    def t_COMMENT_nl(self,t):
+        r'(\n|\r|\r\n)|\s|\t'
+        pass
+
+    def t_COMMENT_error(self,t):
+        r'.'
+        print("ERROR:", t.value)
+        return t
+
+    def t_TIMES(self,t):
+        r'\*'
+        return t
+
+    def t_DIVIDE(self,t):
+        r'\/'
+        return t
 
     def t_error(self,t):
         print("ERROR (Character not recognized): ", t.value)

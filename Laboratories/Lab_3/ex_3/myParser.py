@@ -294,7 +294,10 @@ class MyParser:
         '''
     
     def p_error(self,p):
-        print("Syntax error at ", p)
+        '''
+        error : 
+        '''
+        print("Syntax error")
 
     def p_empty(self,p):
         '''

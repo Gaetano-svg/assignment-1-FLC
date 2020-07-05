@@ -1,4 +1,7 @@
-/* Esempio algoritmo di ordinamento Bubble sort */
+/* Esempio algoritmo di ordinamento
+
+
+ Bubble sort */
 
 
 double x[5];
