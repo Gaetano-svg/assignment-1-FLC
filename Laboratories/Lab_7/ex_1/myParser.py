@@ -40,7 +40,6 @@ class MyParser:
         ('left', 'PLUS', 'MINUS'),
         ('left', 'STAR', 'DIV'),
         ('left', 'UMINUS'),
-        ('nonassoc', 'ELSE'),
 
     )
 
@@ -186,7 +185,7 @@ class MyParser:
 
         if self.sem():
             
-            if(len(p) == 4):    # equivalent to RESULT = parser.stack(-2)
+            if(len(p) == 5):    # equivalent to RESULT = parser.stack(-2)
                 p[0] = p[-1]
 
             else:               # passing inherited TYPE ATTRIBUTE for variable list
@@ -319,7 +318,7 @@ class MyParser:
         '''
 
         if(len(p) == 8):
-            if(p[5] == 'else' & self.sem()):
+            if(p[5] == 'else' and self.sem()):
                 self.dump("L" + str(p[3]) + ":")
             else:
                 self.pSynWarning("Error, else expected in if instruction", p, 5)
@@ -368,8 +367,8 @@ class MyParser:
 
         if self.sem():
             p[0] = self.genLabel()
-            self.dumpln("\tGOTO L" + p[0])
-            self.dump("L" + p[-2] + ":")
+            self.dumpln("\tGOTO L" + str(p[0]))
+            self.dump("L" + str(p[0]) + ":")
 
     # While instruction
     def p_while(self,p):
