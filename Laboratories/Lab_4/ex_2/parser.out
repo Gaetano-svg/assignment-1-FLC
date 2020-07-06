@@ -1224,9 +1224,9 @@ state 54
     ID              reduce using rule 29 (if -> IF if_condition stmt .)
     $end            reduce using rule 29 (if -> IF if_condition stmt .)
     BC              reduce using rule 29 (if -> IF if_condition stmt .)
-    ELSE            shift and go to state 84
+    ELSE            reduce using rule 29 (if -> IF if_condition stmt .)
 
-  ! ELSE            [ reduce using rule 29 (if -> IF if_condition stmt .) ]
+  ! ELSE            [ shift and go to state 84 ]
 
 
 state 55

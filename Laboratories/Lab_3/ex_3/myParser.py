@@ -21,7 +21,6 @@ class MyParser:
         ('left', 'DIVIDE', 'TIMES', 'MOD'),
         ('left', 'INCR', 'DECR'),
         ('nonassoc', 'IFX'),
-        ('nonassoc', 'ELSE')
     )
 
     # GRAMMAR START

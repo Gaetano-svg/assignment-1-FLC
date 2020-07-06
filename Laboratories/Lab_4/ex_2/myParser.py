@@ -29,7 +29,6 @@ class MyParser:
         ('left', 'STAR', 'DIV'),
         ('left', 'UMINUS'),
         ('nonassoc', 'IFX'),
-        ('nonassoc', 'ELSE'),
 
     )
 

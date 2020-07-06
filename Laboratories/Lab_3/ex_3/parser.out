@@ -3829,9 +3829,9 @@ state 187
     CBCLOSED        reduce using rule 88 (if_stmt -> IF RBOPEN cond RBCLOSED stmt .)
     DEFAULT         reduce using rule 88 (if_stmt -> IF RBOPEN cond RBCLOSED stmt .)
     CASE            reduce using rule 88 (if_stmt -> IF RBOPEN cond RBCLOSED stmt .)
-    ELSE            shift and go to state 198
+    ELSE            reduce using rule 88 (if_stmt -> IF RBOPEN cond RBCLOSED stmt .)
 
-  ! ELSE            [ reduce using rule 88 (if_stmt -> IF RBOPEN cond RBCLOSED stmt .) ]
+  ! ELSE            [ shift and go to state 198 ]
 
 
 state 188
