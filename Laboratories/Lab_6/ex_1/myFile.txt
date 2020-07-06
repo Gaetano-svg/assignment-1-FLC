@@ -30,6 +30,12 @@ while (pos > 0) {
 
 }
 
+if ( pos > 0) {
+  x[0] = 3.4;
+} else {
+  x[0] = 3.7;
+}
+
 /* Stampa risultati */
 i = 0;
 while(i<5){

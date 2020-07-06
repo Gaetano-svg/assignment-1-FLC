@@ -30,7 +30,6 @@ class MyParser:
         ('left', 'PLUS', 'MINUS'),
         ('left', 'STAR', 'DIV'),
         ('left', 'UMINUS'),
-        ('nonassoc', 'ELSE'),
 
     )
 
@@ -93,7 +92,7 @@ class MyParser:
         '''
 
         # equivalent to RESULT = parser.stack(-2)
-        if(len(p) == 4):
+        if(len(p) == 5):
             p[0] = p[-1]
         else:
             p[0] = p[1] # passing inherited TYPE ATTRIBUTE for variable list
@@ -265,7 +264,7 @@ class MyParser:
 
         p[0] = self.genLabel()
         print("\tGOTO L", p[0])
-        print("L",p[-2],":",end="")
+        print("L",p[0],":",end="")
 
     # While instruction
     def p_while(self,p):
