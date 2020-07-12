@@ -177,11 +177,11 @@ def t_error(t):
 
 # reading INPUT FILE
 
-file1 = open('./myFile.txt').read()
+myFile = open(sys.argv[1])
 
 lexer = lex.lex()
 
-with open('./myFile.txt') as fp:
+with myFile as fp:
     for line in fp:
         try:
             lexer.input(line)
