@@ -14,14 +14,5 @@ parser = myPars.parser
 
 # reading INPUT FILE
 
-file = ''
-
-with open('./myFile.txt') as fp:
-    for line in fp:
-        try:
-            file = file + line
-
-        except EOFError:
-            break
-
-parser.parse(file)
+myFile = open(sys.argv[1])
+parser.parse(myFile.read())
