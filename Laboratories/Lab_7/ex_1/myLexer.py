@@ -32,7 +32,6 @@ class MyLexer():
         'IF', 'ELSE', 'WHILE', 'PRINT',
         'S', 'CM', 'ID',
         'INT', 'DOUBLE',
-        'EMPTY'
 
     ]
 

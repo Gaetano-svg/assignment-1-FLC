@@ -25,7 +25,6 @@ class MyLexer():
         'TIMES',
         'SO' , 'SC',
         'S', 'CM',
-        'EMPTY'
 
     ]
 
@@ -94,8 +93,4 @@ class MyLexer():
     def t_error(self,t):
         r'.'
         print("ERROR (Character not recognized): ", t.value)
-        return t
-
-    def EMPTY(self,t):
-        r''
         return t
