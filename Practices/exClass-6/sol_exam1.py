@@ -14,5 +14,6 @@ parser = myPars.parser
 
 # reading INPUT FILE
 
-file = open('./myFile.txt')
-parser.parse(file.read())
+myFile = open(sys.argv[1])
+parser.parse(myFile.read())
+
