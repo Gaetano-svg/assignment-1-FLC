@@ -18,8 +18,6 @@ class MyLexer():
     # list of TOKENS
     tokens = [
 
-        'nl',
-        'ws',
         'RC', 'RO', 'BC', 'BO', 'SO' , 'SC',
         'DIV', 'STAR', 'PLUS', 'MINUS',
         'MIN', 'MAJ', 'MIN_EQ', 'MAJ_EQ', 'EQ_MIN', 'EQ_MAJ', 'EQ',

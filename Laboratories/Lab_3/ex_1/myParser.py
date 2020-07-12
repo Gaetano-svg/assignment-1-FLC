@@ -27,8 +27,7 @@ class MyParser:
         ('left', 'PLUS', 'MINUS'),
         ('left', 'STAR', 'DIV'),
         ('left', 'UMINUS'),
-        ('nonassoc', 'IFX'),
-        ('nonassoc', 'ELSE')
+        ('nonassoc', 'IFX')
 
     )
 
@@ -73,7 +72,7 @@ class MyParser:
     
     def p_array(self,p):
         '''
-        array : empty
+        array : 
                 | array SO INT SC
         '''
     
@@ -165,8 +164,3 @@ class MyParser:
     def p_error(self,p):
         print("Syntax error at ", p)
 
-    def p_empty(self,p):
-        '''
-        empty :
-        '''
-        #p[0] = None
