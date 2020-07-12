@@ -80,3 +80,7 @@ class MyParser:
         quantity = float(p[1])
         prod = float(self.symbol_table[p[2]])
         p[0] = quantity * prod
+
+    def p_error(self,p):
+        '''
+        '''
