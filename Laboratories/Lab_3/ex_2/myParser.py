@@ -81,8 +81,3 @@ class MyParser:
     def p_error(self,p):
         print("Syntax error at ", p)
 
-    def p_empty(self,p):
-        '''
-        empty :
-        '''
-        p[0] = None
