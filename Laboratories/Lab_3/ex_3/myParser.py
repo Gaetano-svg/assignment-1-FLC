@@ -223,7 +223,7 @@ class MyParser:
                     | INCR expr
                     | expr DECR
                     | DECR expr
-                    | RBOPEN expr RBCLOSED
+                    | RBOPEN expr RBCLOSED 
                     | MINUS expr
                     | PLUS expr
                     | term

@@ -81,7 +81,7 @@ class MyLexer():
         
         return t
 
-    def t_VOID(slef,t):
+    def t_VOID(self,t):
         r'void'
         return t
 
