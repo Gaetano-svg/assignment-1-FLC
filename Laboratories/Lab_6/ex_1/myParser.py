@@ -211,8 +211,8 @@ class MyParser:
     # If instruction
     def p_if(self,p):
         '''
-        if  :  IF if_condition nt0_if stmt ELSE nt1_if stmt
-                | IF if_condition nt0_if stmt
+        if  :  IF if_condition nt0_if stmt
+                | IF if_condition nt0_if stmt ELSE nt1_if stmt 
                 | IF if_condition nt0_if stmt error nt1_if stmt
         '''
 
@@ -396,7 +396,7 @@ class MyParser:
 
     def p_error(self,p):
         '''
-        error: empty
+        error: 
         '''
 
     def p_empty(self,p):
