@@ -60,3 +60,7 @@ class MyParser:
         r_copy : 
         '''
         p[0] = p[-3]
+        
+    def p_error(self,p):
+        '''
+        '''
