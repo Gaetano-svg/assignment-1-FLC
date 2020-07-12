@@ -11,7 +11,9 @@ lexer = myLex.lexer
 
 # reading INPUT FILE
 
-with open('./myFile.txt') as fp:
+myFile = open(sys.argv[1])
+
+with myFile as fp:
     for line in fp:
         try:
             lexer.input(line)
